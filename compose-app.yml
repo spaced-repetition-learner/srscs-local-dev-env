@@ -1,0 +1,99 @@
+version: '3.9'
+
+services:
+  userservice:
+    container_name: userservice
+    image: dadepu/srscs_user:0.1.15
+    depends_on:
+      - kafkabroker
+      - mariadb
+    restart: on-failure
+    environment:
+      SERVICE_PORT: 9001
+      DB_HOST: mariadb:3306
+      DB_NAME: user_service
+      DB_USER: root
+      DB_PASS: root
+      KAFKA_BOOTSTRAP: kafkabroker:9092
+    ports:
+      - '9001:9001'
+    networks:
+      - kafka_net
+      - mariadb_net
+      - app_net
+
+  deckservice:
+    container_name: deckservice
+    image: dadepu/srscs_deck:0.1.1
+    depends_on:
+      - kafkabroker
+      - mongo
+    restart: on-failure
+    environment:
+      SERVICE_PORT: 9002
+      DB_HOST: mongo
+      DB_PORT: 27017
+      DB_NAME: deck_service
+      DB_USER: root
+      DB_PASS: root
+      KAFKA_BOOTSTRAP: kafkabroker:9092
+    ports:
+      - '9002:9002'
+    networks:
+      - kafka_net
+      - mongo_net
+      - app_net
+
+  collabservice:
+    container_name: collabservice
+    image: dadepu/srscs_collab:0.1.1
+    restart: on-failure
+    environment:
+      SERVICE_PORT: 9003
+      DB_HOST: cassandra:9042
+      DB_NAME: collab_service
+      KAFKA_BOOTSTRAP: kafkabroker:9092
+    ports:
+      - '9003:9003'
+    networks:
+      - kafka_net
+      - cassandra_net
+      - app_net
+
+  prodtestservice:
+    container_name: prodtestservice
+    image: dadepu/srscs_prod_test:0.1.2
+    restart: on-failure
+    environment:
+      SERVICE_PORT: 9001
+      DB_HOST: mariadb:3306
+      DB_NAME: prod_test_service
+      DB_USER: root
+      DB_PASS: root
+      KAFKA_BOOTSTRAP: kafkabroker:9092
+      USER_SERVICE_ADDRESS: userservice:9001
+      DECK_SERVICE_ADDRESS: deckservice:9002
+      COLLAB_SERVICE_ADDRESS: collabservice:9003
+    ports:
+      - '9004:9004'
+    networks:
+      - kafka_net
+      - mariadb_net
+      - app_net
+
+networks:
+  kafka_net:
+    external: true
+    name: kafka_net
+  mongo_net:
+    external: true
+    name: mongo_net
+  mariadb_net:
+    external: true
+    name: mariadb_net
+  cassandra_net:
+    external: true
+    name: cassandra_net
+  app_net:
+    external: false
+    name: app_net
