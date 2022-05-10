@@ -95,6 +95,15 @@ services:
     networks:
       - cassandra_net
 
+  zipkin:
+    container_name: zipkin
+    image: openzipkin/zipkin
+    restart: on-failure
+    ports:
+      - '9411:9411'
+    networks:
+      - tracing_net
+
 networks:
   kafka_net:
     external: false
@@ -108,3 +117,6 @@ networks:
   cassandra_net:
     external: false
     name: cassandra_net
+  tracing_net:
+    external: false
+    name: tracing_net
