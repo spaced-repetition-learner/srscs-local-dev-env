@@ -17,11 +17,14 @@ services:
       KAFKA_BOOTSTRAP: kafkabroker:9092
     ports:
       - '9001:9001'
+    volumes:
+      - ./logs/prod/user_service:/userService/logs:rw
     networks:
       - kafka_net
       - mariadb_net
       - app_net
       - tracing_net
+      - log_net
 
   deckservice:
     container_name: deckservice
@@ -104,3 +107,6 @@ networks:
   tracing_net:
     external: true
     name: tracing_net
+  log_net:
+    external: true
+    name: log_net

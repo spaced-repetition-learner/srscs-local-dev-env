@@ -137,6 +137,29 @@ services:
     networks:
       - log_net
 
+  logstash:
+    container_name: logstash
+    image: logstash:8.1.3
+    restart: on-failure
+    depends_on:
+      - elasticsearch
+      - kibana
+    ports:
+      - '25826:25826'
+      - '5044:5044'
+    volumes:
+      - ./logstash/pipeline:/usr/share/logstash/pipeline:ro                                 # Configuration File
+      - ./logs/prod:/usr/share/logstash/logs/prod:ro
+      - ../srscs-prod-test-service/logs:/usr/share/logstash/logs/dev/prod_test_service:ro
+      - ../srscs-user-service/logs:/usr/share/logstash/logs/dev/user_service:ro
+      - ../srscs-deck-service/logs:/usr/share/logstash/logs/dev/deck_service:ro
+      - ../srscs-collab-service/logs:/usr/share/logstash/logs/dev/collab_service:ro
+
+    environment:
+      ELASTIC_HOST: elasticsearch:9200
+    networks:
+      - log_net
+
 networks:
   kafka_net:
     external: false
