@@ -30,9 +30,10 @@ services:
     networks:
       - kafka_net
 
-  mariadb:
-    container_name: mariadb
-    image: mariadb
+  mysql:
+    container_name: mysql
+    image: mysql
+    platform: linux/x86_64
     restart: on-failure
     environment:
       MYSQL_DATABASE: user_service
@@ -47,9 +48,9 @@ services:
     image: phpmyadmin
     restart: on-failure
     depends_on:
-      - mariadb
+      - mysql
     environment:
-      PMA_HOST: mariadb
+      PMA_HOST: mysql
       PMA_PORT: 3306
       PMA_USER: root
       PMA_PASSWORD: root
