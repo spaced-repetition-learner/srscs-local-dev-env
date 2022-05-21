@@ -62,10 +62,10 @@ services:
 
   prodtestservice:
     container_name: prodtestservice
-    image: dadepu/srscs_prod_test:0.1.2
+    image: dadepu/srscs_prod_test:0.1.3
     restart: on-failure
     environment:
-      SERVICE_PORT: 9001
+      SERVICE_PORT: 9004
       DB_HOST: mariadb:3306
       DB_NAME: prod_test_service
       DB_USER: root
