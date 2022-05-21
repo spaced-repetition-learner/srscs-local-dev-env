@@ -4,9 +4,9 @@ services:
   userservice:
     container_name: userservice
     image: dadepu/srscs_user:0.1.15
-    depends_on:
-      - kafkabroker
-      - mariadb
+#    depends_on:
+#      - kafkabroker
+#      - mariadb
     restart: on-failure
     environment:
       SERVICE_PORT: 9001
@@ -25,9 +25,9 @@ services:
   deckservice:
     container_name: deckservice
     image: dadepu/srscs_deck:0.1.1
-    depends_on:
-      - kafkabroker
-      - mongo
+#    depends_on:
+#      - kafkabroker
+#      - mongo
     restart: on-failure
     environment:
       SERVICE_PORT: 9002
